@@ -1,0 +1,6 @@
+npm install firebase-admin --save
+
+npm i -S express body-parser cors
+
+vercel dev  //despliega de forma local
+vercel      //despliega en la web

@@ -22,10 +22,10 @@ app.get('/api/hello',(req, res) => {
     res.status(200).json('hola desde hello')
 }) 
 
-app.use(require('../route/route'))
+app.use(require('../route/inventario'))
+app.use(require('../route/empaque'))
 
-app.get('*',(req, res) => {
-    console.log('hola')
+app.get('*',(req, res) => {    
     res.status(200).json('hola mundo')
 }) 
 

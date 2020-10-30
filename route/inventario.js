@@ -15,7 +15,7 @@ const db = admin.firestore()
 
 
 //obtener un dato
-router.get('/api/products/:product_id', async (req, res) => {
+router.get('/api/inventario/:product_id', async (req, res) => {
     try {
         const doc = db.collection("SMINVENTARIO").doc(req.params.product_id) //product_id es variable
         const response =  await doc.get()         
@@ -27,16 +27,21 @@ router.get('/api/products/:product_id', async (req, res) => {
 })
 
 //obtener todos los datos
-router.get('/api/products', async (req, res) => {
+router.get('/api/inventario', async (req, res) => {
    try {        
      const query = db.collection('SMINVENTARIO')  
      const querySnapshot = await query.get()      
      const docs = querySnapshot.docs      
 
      const response = docs.map(doc => ({
-         id: doc.id,
+         //id: doc.id,
+         clave: doc.clave,
          producto: doc.data().producto,
-         clave: doc.data().clave
+         //clave: doc.data().clave,
+         iva: doc.data().iva,
+         usuario: doc.data().usuario,
+         fecha: doc.data().fecha,
+         ieps: doc.data().ieps
      }))
 
      return res.status(200).json(response)
@@ -45,12 +50,15 @@ router.get('/api/products', async (req, res) => {
    }
 })
 
-router.post('/api/products', async (req, res) => {
+router.post('/api/inventario', async (req, res) => {
   try {
-   await db.collection('SMINVENTARIO').doc('/'+req.body.id +'/')
+   await db.collection('SMINVENTARIO').doc('/'+req.body.clave +'/')
    .create({
-       producto:req.body.producto,
-       clave: req.body.clave
+        producto:req.body.producto,       
+        iva:  req.body.iva,
+        usuario:  req.body.usuario,
+        fecha:  req.body.fecha,
+        ieps:  req.body.ieps
    })   
 
    return res.status(204).json()       
@@ -61,7 +69,7 @@ router.post('/api/products', async (req, res) => {
   }
 })
 
-router.delete('/api/products/:product_id',async (req, res) => {
+router.delete('/api/inventario/:product_id',async (req, res) => {
    try {
        const doc = db.collection('SMINVENTARIO').doc(req.params.product_id)
        await doc.delete()
@@ -71,12 +79,15 @@ router.delete('/api/products/:product_id',async (req, res) => {
    }
 })
 
-router.put('/api/products/:product_id',async (req, res) => {
+router.put('/api/inventario/:product_id',async (req, res) => {
    try {
        const doc = db.collection('SMINVENTARIO').doc(req.params.product_id)
        await doc.update({
-           producto:req.body.producto,
-           clave: req.body.clave  
+            producto:req.body.producto,
+            iva:  req.body.iva,
+            usuario:  req.body.usuario,
+            fecha:  req.body.fecha,
+            ieps:  req.body.ieps  
        })
        return res.status(200).json()
    } catch (error) {

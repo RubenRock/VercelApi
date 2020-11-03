@@ -35,7 +35,7 @@ router.get('/api/inventario', async (req, res) => {
 
      const response = docs.map(doc => ({
          //id: doc.id,
-         clave: doc.clave,
+         clave: doc.id,
          producto: doc.data().producto,
          //clave: doc.data().clave,
          iva: doc.data().iva,

@@ -26,7 +26,7 @@ router.get('/api/empaque', async (req, res) => {
      const docs = querySnapshot.docs      
 
      const response = docs.map(doc => ({         
-         clave: doc.clave,
+         clave: doc.id,
          empaque: doc.data().empaque,
          precio: doc.data().precio,
          piezas: doc.data().piezas,

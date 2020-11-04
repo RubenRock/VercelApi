@@ -35,8 +35,8 @@ router.get('/api/inventario', async (req, res) => {
 
      const response = docs.map(doc => ({
          //id: doc.id,
-         clave: doc.id,
-         producto: doc.data().producto,
+         producto: doc.id,
+         clave: doc.data().clave,
          //clave: doc.data().clave,
          iva: doc.data().iva,
          usuario: doc.data().usuario,
@@ -51,14 +51,14 @@ router.get('/api/inventario', async (req, res) => {
 })
 
 router.post('/api/inventario', async (req, res) => {
-  try {
-   await db.collection('SMINVENTARIO').doc('/'+req.body.clave +'/')
+  try {      
+   await db.collection('SMINVENTARIO').doc('/'+req.body.PRODUCTO +'/')
    .create({
-        producto:req.body.producto,       
-        iva:  req.body.iva,
-        usuario:  req.body.usuario,
-        fecha:  req.body.fecha,
-        ieps:  req.body.ieps
+        clave:req.body.CLAVE,       
+        iva:  req.body.IVA,
+        usuario:  req.body.USUARIO,
+        fecha:  req.body.FECHA,
+        ieps:  req.body.IEPS
    })   
 
    return res.status(204).json()       

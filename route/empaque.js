@@ -26,12 +26,12 @@ router.get('/api/empaque', async (req, res) => {
      const docs = querySnapshot.docs      
 
      const response = docs.map(doc => ({         
-         clave: doc.id,
-         empaque: doc.data().empaque,
-         precio: doc.data().precio,
-         piezas: doc.data().piezas,
-         barras: doc.data().barras,
-         id: doc.data().id
+        id: doc.id,
+        empaque: doc.data().empaque,
+        precio: doc.data().precio,
+        piezas: doc.data().piezas,
+        barras: doc.data().barras,
+        clave: doc.data().clave
      }))
 
      return res.status(200).json(response)
@@ -42,13 +42,13 @@ router.get('/api/empaque', async (req, res) => {
 
 router.post('/api/empaque', async (req, res) => {
   try {
-   await db.collection('SMEMPAQUE').doc('/'+req.body.id +'/')
+   await db.collection('SMEMPAQUE').doc('/'+req.body.ID +'/')
    .create({
-        empaque: req.body.empaque,
-        precio: req.body.precio,
-        piezas: req.body.piezas,
-        barras: req.body.barras,
-        id: req.body.id
+        empaque: req.body.EMPAQUE,
+        precio: req.body.PRECIO,
+        piezas: req.body.PIEZAS,
+        barras: req.body.BARRAS,       
+        clave:req.body.CLAVE
    })   
 
    return res.status(204).json()       

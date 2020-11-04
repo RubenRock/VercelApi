@@ -42,7 +42,7 @@ router.get('/api/empaque', async (req, res) => {
 
 router.post('/api/empaque', async (req, res) => {
   try {
-   await db.collection('SMEMPAQUE').doc('/'+req.body.clave +'/')
+   await db.collection('SMEMPAQUE').doc('/'+req.body.id +'/')
    .create({
         empaque: req.body.empaque,
         precio: req.body.precio,

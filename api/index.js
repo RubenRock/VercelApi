@@ -24,6 +24,8 @@ app.get('/api/hello',(req, res) => {
 
 app.use(require('../route/inventario'))
 app.use(require('../route/empaque'))
+app.use(require('../route/remisiones'))
+app.use(require('../route/listaremision'))
 
 app.get('*',(req, res) => {    
     res.status(200).json('hola mundo')

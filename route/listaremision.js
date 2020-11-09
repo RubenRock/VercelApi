@@ -62,7 +62,7 @@ router.post('/api/listaremision', async (req, res) => {
    return res.status(204).json()       
   } catch (error) {
       console.log(error)
-      return res.status(500).send(error)
+      return res.status(500).json(error)
       
   }
 })

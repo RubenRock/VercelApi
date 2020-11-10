@@ -73,6 +73,25 @@ router.delete('/api/remisiones/:remision_id',async (req, res) => {
    }
 })
 
+router.delete('/api/remisiones/',async (req, res) => {
+    try {
+        const query = db.collection('SMREMISIONES')  
+        const querySnapshot = await query.get() 
+
+        let batch = db.batch()
+
+        querySnapshot.docs.forEach((doc) => {
+            batch.delete(doc.ref);
+          })
+
+          batch.commit()
+
+        return res.status(200).json()
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+ })
+
 router.put('/api/remisiones/:remision_id',async (req, res) => {
    try {
        const doc = db.collection('SMREMISIONES').doc(req.params.remision_id)

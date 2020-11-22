@@ -26,6 +26,8 @@ app.use(require('../route/inventario'))
 app.use(require('../route/empaque'))
 app.use(require('../route/remisiones'))
 app.use(require('../route/listaremision'))
+app.use(require('../route/listasimilar'))
+app.use(require('../route/similares'))
 app.use(require('../route/miarroba'))
 
 app.get('*',(req, res) => {    

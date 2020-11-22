@@ -6,3 +6,4 @@ npm install node-fetch  //para poder usar fetch
 
 vercel dev  //despliega de forma local
 vercel      //despliega en la web
+vercel --prod  //despliega trabajo terminado

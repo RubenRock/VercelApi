@@ -69,6 +69,25 @@ router.delete('/api/empaque/:empaque_id',async (req, res) => {
    }
 })
 
+router.delete('/api/empaque/',async (req, res) => {
+    try {
+        const query = db.collection('SMEMPAQUE')  
+        const querySnapshot = await query.get() 
+
+        let batch = db.batch()
+
+        querySnapshot.docs.forEach((doc) => {
+            batch.delete(doc.ref);
+          })
+
+          batch.commit()
+
+        return res.status(200).json()
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+ })
+
 router.put('/api/empaque/:empaque_id',async (req, res) => {
    try {
        const doc = db.collection('SMEMPAQUE').doc(req.params.empaque_id)

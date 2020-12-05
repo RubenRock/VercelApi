@@ -1,5 +1,7 @@
 const {Router} = require('express')
 const admin = require('firebase-admin')
+const Listaremision = require('../models/Listaremision')
+
 
 const router = Router()
 
@@ -44,10 +46,9 @@ router.get('/api/listaremision', async (req, res) => {
    }
 })
 
-router.post('/api/listaremision', async (req, res) => {
+router.post('/api/listaremision',  (req, res) => {
   try {
-   await db.collection('SMLISTAREMISION').doc('/'+req.body.folio +'/')
-   .create({
+   Listaremision.create({
         cliente: req.body.cliente,        
         total: req.body.total,       
         fecha: req.body.fecha,
@@ -59,7 +60,7 @@ router.post('/api/listaremision', async (req, res) => {
         descuento:req.body.descuento
    })   
 
-   return res.status(204).json()       
+   return res.status(204).json()        
   } catch (error) {
       console.log(error)
       return res.status(500).json(error)

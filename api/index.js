@@ -1,18 +1,11 @@
+import {coneccion} from '../lib/database'
 const express = require('express')
 const app = express()
 const bodyparse = require('body-parser')
 const  cors = require('cors')
 
-// const admin = require('firebase-admin')
-// var serviceAccount = require("./credentials.json");
 
-// admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount),
-//     databaseURL: "https://prueba-5fb97.firebaseio.com"
-//   });
-
-// const db = admin.firestore()
-
+const db = await coneccion()
 
 
 app.use(bodyparse.json())
@@ -30,7 +23,8 @@ app.use(require('../route/listasimilar'))
 app.use(require('../route/similares'))
 app.use(require('../route/miarroba'))
 
-app.get('*',(req, res) => {    
+app.get('*',async (req, res) => {    
+    
     res.status(200).json('hola mundo')
 }) 
 

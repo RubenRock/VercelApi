@@ -4,10 +4,6 @@ const app = express()
 const bodyparse = require('body-parser')
 const  cors = require('cors')
 
-
-const db = await coneccion()
-
-
 app.use(bodyparse.json())
 app.use(cors())
 
@@ -24,7 +20,7 @@ app.use(require('../route/similares'))
 app.use(require('../route/miarroba'))
 
 app.get('*',async (req, res) => {    
-    
+    const db = await coneccion()
     res.status(200).json('hola mundo')
 }) 
 

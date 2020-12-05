@@ -46,9 +46,9 @@ router.get('/api/listaremision', async (req, res) => {
    }
 })
 
-router.post('/api/listaremision',  (req, res) => {
+router.post('/api/listaremision',  async (req, res) => {
   try {
-   Listaremision.create({
+    const newLista =  new Listaremision({
         cliente: req.body.cliente,        
         total: req.body.total,       
         fecha: req.body.fecha,
@@ -58,12 +58,12 @@ router.post('/api/listaremision',  (req, res) => {
         domicilio:req.body.domicilio,
         impresion:req.body.impresion,
         descuento:req.body.descuento
-   })   
-
-   return res.status(204).json()        
+   })
+   const listaSaved = await newLista.save()     
+   return res.status(204).json(listaSaved)        
   } catch (error) {
       console.log(error)
-      return res.status(500).json(error)
+      return res.status(500).json(listaSaved)
       
   }
 })

@@ -1,4 +1,5 @@
 import {coneccion} from '../lib/database'
+const mongoose = require('mongoose');
 const express = require('express')
 const app = express()
 const bodyparse = require('body-parser')
@@ -6,6 +7,8 @@ const  cors = require('cors')
 
 app.use(bodyparse.json())
 app.use(cors())
+
+coneccion();
 
 app.get('/api/hello',(req, res) => {
     res.status(200).json('hola desde hello')

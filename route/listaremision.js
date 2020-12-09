@@ -1,128 +1,71 @@
 const {Router} = require('express')
-const admin = require('firebase-admin')
+//const admin = require('firebase-admin')
 const Listaremision = require('../models/Listaremision')
 
 
 const router = Router()
 
-const db = admin.firestore()
+//const db = admin.firestore()
 
 
 //obtener un dato
-router.get('/api/listaremision/:remision_id', async (req, res) => {
-    try {
-        const doc = db.collection("SMLISTAREMISION").doc(req.params.remision_id) //product_id es variable
-        const response =  await doc.get()         
-        const product = response.data()
-        return res.status(200).json(product)
-    } catch (error) {
-        res.status(500).send(error)
-    }
-})
+router.get('/api/listaremision/:id', (req, res) => {    
+        let {id} = req.params
+        Listaremision.findById(id)
+        .exec()
+        .then(x => res.status(200).send(x))
+        .catch(error =>  res.status(500).json({'message':'No se encontro nada', "data":id}))         
+    })
 
 //obtener todos los datos
-router.get('/api/listaremision', async (req, res) => {
-    try {        
-     const query = db.collection('SMLISTAREMISION')  
-     const querySnapshot = await query.get()      
-     const docs = querySnapshot.docs      
-
-     const response = docs.map(doc => ({         
-        folio: doc.id,        
-        cliente: doc.data().cliente,        
-        total: doc.data().total,
-        fecha: doc.data().fecha,
-        vendedor: doc.data().vendedor,
-        condicion: doc.data().condicion,
-        estado: doc.data().estado,
-        domicilio: doc.data().domicilio,
-        impresion: doc.data().impresion,
-        descuento: doc.data().descuento
-     }))
-
-     return res.status(200).json(response)
-   } catch (error) {
-       return res.status(500).send(error)
-   }
+router.get('/api/listaremision', (req, res) => {       
+        Listaremision.find()
+        .exec()
+        .then(x => res.status(200).send(x))
+        .catch(error => res.status(500).send(error))   
+   
 })
 
-router.post('/api/listaremision',  async (req, res) => {
-  try {
-    const newLista =  new Listaremision({
-        cliente: req.body.cliente,        
-        total: req.body.total,       
-        fecha: req.body.fecha,
-        vendedor:req.body.vendedor,
-        condicion:req.body.condicion,
-        estado:req.body.estado,
-        domicilio:req.body.domicilio,
-        impresion:req.body.impresion,
-        descuento:req.body.descuento
-   })
-   const listaSaved = await newLista.save()     
-   return res.status(204).json(listaSaved)        
-  } catch (error) {
-      console.log(error)
-      return res.status(500).json(listaSaved)
-      
-  }
+router.post('/api/listaremision',  async (req, res) => {   
+   const newLista = new Listaremision(req.body);
+    await newLista.save();
+    console.log(req.params)
+    res.json({'message':'Saved successful', "data":req.body})  
 })
 
-router.delete('/api/listaremision/:remision_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMLISTAREMISION').doc(req.params.remision_id)
-       await doc.delete()
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
+router.delete('/api/listaremision/:id',async (req, res) => {
+    let { id } = req.params;
+    try{        
+        await Listaremision.remove({_id: id});        
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error existente al borrar: ": id})
    }
+
+   return res.status(200).json()
 })
 
 router.delete('/api/listaremision/',async (req, res) => {
-    try {
-     /*    const query = db.collection('SMLISTAREMISION')  
-        const querySnapshot = await query.get()      
-        const docs = querySnapshot.docs      
-   
-        docs.forEach(async doc => {
-            const document = db.collection('SMLISTAREMISION').doc(doc.id)
-            await document.delete()  
-        }) */
-        const query = db.collection('SMLISTAREMISION')  
-        const querySnapshot = await query.get() 
-
-        let batch = db.batch()
-
-        querySnapshot.docs.forEach((doc) => {
-            batch.delete(doc.ref);
-          })
-
-          batch.commit()
-
-        return res.status(200).json()
+    try{        
+        await Listaremision.remove();        
     } catch (error) {
-        return res.status(500).send(error)
-    }
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo borrar la coleccion"})
+   }   
+   return res.status(200).json({"message:":"coleccion eliminada"})
  })
 
-router.put('/api/listaremision/:remision_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMLISTAREMISION').doc(req.params.remision_id)
-       await doc.update({
-        cliente: req.body.cliente,        
-        total: req.body.total,       
-        fecha: req.body.fecha,
-        vendedor:req.body.vendedor,
-        condicion:req.body.condicion,
-        estado:req.body.estado,
-        domicilio:req.body.domicilio,
-        impresion:req.body.impresion,
-        descuento:req.body.descuento      
-       })
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
-   }
+router.put('/api/listaremision/:id',async (req, res) => {
+    let {id} = req.params
+
+    try{        
+        await Listaremision.update({_id: id}, req.body);
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo actualizar","data: ": id})
+   }   
+    
+    return res.status(200).json({"message:":"actualizacion correcta"})
 })
 
 module.exports = router

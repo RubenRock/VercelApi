@@ -1,6 +1,7 @@
-const {Schema, model} = require('mongoose')
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const TablaListaRemsion = new Schema({
+const TablaListaRemsion =  Schema({
     folio: String,
     cliente: String,
     total: String,
@@ -12,8 +13,9 @@ const TablaListaRemsion = new Schema({
     impresion:String,
     descuento:String,   
 },{
-    timestamps:true  //crea en automatico fecha de creacion y de modificacion
+    timestamps:true,  //crea en automatico fecha de creacion y de modificacion
+    versionKey: false,
 }
 )
 
-module.exports = model('ListaRemision', TablaListaRemsion)
+module.exports = mongoose.model('ListaRemision', TablaListaRemsion)

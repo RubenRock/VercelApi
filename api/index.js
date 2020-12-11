@@ -22,8 +22,7 @@ app.use(require('../route/listasimilar'))
 app.use(require('../route/similares'))
 app.use(require('../route/miarroba'))
 
-app.get('*',async (req, res) => {    
-    const db = await coneccion()
+app.get('*',async (req, res) => { 
     res.status(200).json('hola mundo')
 }) 
 

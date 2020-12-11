@@ -1,117 +1,65 @@
 const {Router} = require('express')
-const admin = require('firebase-admin')
+const Inventario = require('../models/Inventario')
 
 const router = Router()
 
-var serviceAccount = require("./credentials.json")
-
-//datos obtenidos de google Cloud Firestore, configuracion del proyecto, cuentas de servicio
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount), //credentials.json es un archivo que obtuve de : generar nueva clave privada
-    databaseURL: "https://prueba-5fb97.firebaseio.com"
-})
-
-const db = admin.firestore()
-
-
 //obtener un dato
-router.get('/api/inventario/:product_id', async (req, res) => {
-    try {
-        const doc = db.collection("SMINVENTARIO").doc(req.params.product_id) //product_id es variable
-        const response =  await doc.get()         
-        const product = response.data()
-        return res.status(200).json(product)
-    } catch (error) {
-        res.status(500).send(error)
-    }
+router.get('/api/inventario/:id', async (req, res) => {
+    let {id} = req.params
+    Inventario.findById(id)
+    .exec()
+    .then(x => res.status(200).send(x))
+    .catch(error =>  res.status(500).json({'message':'No se encontro nada', "data":id}))         
 })
+
 
 //obtener todos los datos
-router.get('/api/inventario', async (req, res) => {
-   try {        
-     const query = db.collection('SMINVENTARIO')  
-     const querySnapshot = await query.get()      
-     const docs = querySnapshot.docs      
+router.get('/api/inventario', (req, res) => {
+    Inventario.find()
+    .exec()
+    .then(x => res.status(200).send(x))
+    .catch(error => res.status(500).send(error))   
 
-     const response = docs.map(doc => ({
-         //id: doc.id,
-         producto: doc.id,
-         clave: doc.data().clave,
-         //clave: doc.data().clave,
-         iva: doc.data().iva,
-         usuario: doc.data().usuario,
-         fecha: doc.data().fecha,
-         ieps: doc.data().ieps
-     }))
-
-     return res.status(200).json(response)
-   } catch (error) {
-       return res.status(500).send(error)
-   }
 })
 
 router.post('/api/inventario', async (req, res) => {
-  try {      
-   await db.collection('SMINVENTARIO').doc('/'+req.body.PRODUCTO +'/')
-   .create({
-        clave:req.body.CLAVE,       
-        iva:  req.body.IVA,
-        usuario:  req.body.USUARIO,
-        fecha:  req.body.FECHA,
-        ieps:  req.body.IEPS
-   })   
-
-   return res.status(204).json()       
-  } catch (error) {
-      console.log(error)
-      return res.status(500).send(error)
-      
-  }
+    await Inventario.insertMany(req.body)    
+    res.json({'message':'Saved successful', "data":req.body})  
 })
 
-router.delete('/api/inventario/:product_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMINVENTARIO').doc(req.params.product_id)
-       await doc.delete()
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
+router.delete('/api/inventario/:id',async (req, res) => {
+    let { id } = req.params;
+    try{        
+        await Inventario.deleteOne({_id: id});        
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error existente al borrar: ": id})
    }
+
+   return res.status(200).json()
 })
 
 router.delete('/api/inventario/',async (req, res) => {
-    try {
-        const query = db.collection('SMINVENTARIO')  
-        const querySnapshot = await query.get() 
-
-        let batch = db.batch()
-
-        querySnapshot.docs.forEach((doc) => {
-            batch.delete(doc.ref);
-          })
-
-          batch.commit()
-
-        return res.status(200).json()
+    try{        
+        await Inventario.deleteMany();        
     } catch (error) {
-        return res.status(500).send(error)
-    }
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo borrar la coleccion"})
+   }   
+   return res.status(200).json({"message:":"coleccion eliminada"})
  })
 
-router.put('/api/inventario/:product_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMINVENTARIO').doc(req.params.product_id)
-       await doc.update({
-            producto:req.body.producto,
-            iva:  req.body.iva,
-            usuario:  req.body.usuario,
-            fecha:  req.body.fecha,
-            ieps:  req.body.ieps  
-       })
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
-   }
+router.put('/api/inventario/:id',async (req, res) => {
+    let {id} = req.params
+
+    try{        
+        await Inventario.update({_id: id}, req.body);
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo actualizar","data: ": id})
+   }   
+    
+    return res.status(200).json({"message:":"actualizacion correcta"})
 })
 
 module.exports = router

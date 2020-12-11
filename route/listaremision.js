@@ -1,12 +1,8 @@
 const {Router} = require('express')
-//const admin = require('firebase-admin')
 const Listaremision = require('../models/Listaremision')
 
 
 const router = Router()
-
-//const db = admin.firestore()
-
 
 //obtener un dato
 router.get('/api/listaremision/:id', (req, res) => {    
@@ -27,16 +23,16 @@ router.get('/api/listaremision', (req, res) => {
 })
 
 router.post('/api/listaremision',  async (req, res) => {   
-   const newLista = new Listaremision(req.body);
-    await newLista.save();
-    console.log(req.params)
+   //const newLista = new Listaremision(req.body);
+    //await newLista.save();
+    await Listaremision.insertMany(req.body)    
     res.json({'message':'Saved successful', "data":req.body})  
 })
 
 router.delete('/api/listaremision/:id',async (req, res) => {
     let { id } = req.params;
     try{        
-        await Listaremision.remove({_id: id});        
+        await Listaremision.deleteOne({_id: id});        
     } catch (error) {
         console.log(error)
        return res.status(500).json({"error existente al borrar: ": id})
@@ -47,7 +43,7 @@ router.delete('/api/listaremision/:id',async (req, res) => {
 
 router.delete('/api/listaremision/',async (req, res) => {
     try{        
-        await Listaremision.remove();        
+        await Listaremision.deleteMany();        
     } catch (error) {
         console.log(error)
        return res.status(500).json({"error: ": "no se pudo borrar la coleccion"})

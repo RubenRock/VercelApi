@@ -1,97 +1,66 @@
 const {Router} = require('express')
-const admin = require('firebase-admin')
+const Similares = require('../models/Similares')
+
 
 const router = Router()
 
-const db = admin.firestore()
-
-
 //obtener un dato
-router.get('/api/similares/:similares_id', async (req, res) => {
-    try {        
-        const doc = db.collection("SMSIMILARES").doc(req.params.similares_id) //product_id es variable
-        const response =  await doc.get()         
-        const product = response.data()
-        return res.status(200).json(product)
-    } catch (error) {
-        res.status(500).send(error)
-    }
+router.get('/api/similares/:id', async (req, res) => {
+    let {id} = req.params
+    Similares.findById(id)
+    .exec()
+    .then(x => res.status(200).send(x))
+    .catch(error =>  res.status(500).json({'message':'No se encontro nada', "data":id}))         
 })
 
+
 //obtener todos los datos
-router.get('/api/similares', async (req, res) => {
-    try {                
-        const query = db.collection('SMSIMILARES')  
-        const querySnapshot = await query.get()      
-        const docs = querySnapshot.docs      
+router.get('/api/similares', (req, res) => {
+    Similares.find()
+    .exec()
+    .then(x => res.status(200).send(x))
+    .catch(error => res.status(500).send(error))   
 
-        const response = docs.map(doc => ({         
-            id: doc.id,
-            clave:doc.data().clave,
-            producto: doc.data().producto
-        }))
-
-        return res.status(200).json(response)
-   } catch (error) {
-       return res.status(500).send(error)
-   }
 })
 
 router.post('/api/similares', async (req, res) => {
-  try {
-    await db.collection('SMSIMILARES').doc('/'+req.body.id +'/')
-    .create({
-            clave: req.body.clave,        
-            producto: req.body.producto
-    })   
-
-    return res.status(204).json()       
-  } catch (error) {
-      console.log(error)
-      return res.status(500).send(error)
-      
-  }
+    await Similares.insertMany(req.body)    
+    res.json({'message':'Saved successful', "data":req.body})  
 })
 
-router.delete('/api/similares/:similares_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMSIMILARES').doc(req.params.similares_id)
-       await doc.delete()
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
+router.delete('/api/similares/:id',async (req, res) => {
+    let { id } = req.params;
+    try{        
+        await Similares.deleteOne({_id: id});        
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error existente al borrar: ": id})
    }
+
+   return res.status(200).json()
 })
 
 router.delete('/api/similares/',async (req, res) => {
-    try {
-        const query = db.collection('SMSIMILARES')  
-        const querySnapshot = await query.get() 
-
-        let batch = db.batch()
-
-        querySnapshot.docs.forEach((doc) => {
-            batch.delete(doc.ref);
-          })
-
-          batch.commit()
-
-        return res.status(200).json()
+    try{        
+        await Similares.deleteMany();        
     } catch (error) {
-        return res.status(500).send(error)
-    }
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo borrar la coleccion"})
+   }   
+   return res.status(200).json({"message:":"coleccion eliminada"})
  })
 
-router.put('/api/similares/:similares_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMSIMILARES').doc(req.params.similares_id)
-       await doc.update({        
-        producto: req.body.producto
-       })
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
-   }
+router.put('/api/similares/:id',async (req, res) => {
+    let {id} = req.params
+
+    try{        
+        await Similares.update({_id: id}, req.body);
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo actualizar","data: ": id})
+   }   
+    
+    return res.status(200).json({"message:":"actualizacion correcta"})
 })
 
 module.exports = router

@@ -1,112 +1,65 @@
 const {Router} = require('express')
-const admin = require('firebase-admin')
+const Remision = require('../models/Remisiones')
 
 const router = Router()
 
-const db = admin.firestore()
-
 
 //obtener un dato
-router.get('/api/remisiones/:remision_id', async (req, res) => {
-    try {
-        const doc = db.collection("SMREMISIONES").doc(req.params.remision_id) //product_id es variable
-        const response =  await doc.get()         
-        const product = response.data()
-        return res.status(200).json(product)
-    } catch (error) {
-        res.status(500).send(error)
-    }
-})
+router.get('/api/remisiones/:id', (req, res) => {
+    let {id} = req.params
+        Remision.findById(id)
+        .exec()
+        .then(x => res.status(200).send(x))
+        .catch(error =>  res.status(500).json({'message':'No se encontro nada', "data":id}))         
+    })
 
 //obtener todos los datos
-router.get('/api/remisiones', async (req, res) => {
-    try {        
-     const query = db.collection('SMREMISIONES')  
-     const querySnapshot = await query.get()      
-     const docs = querySnapshot.docs      
+router.get('/api/remisiones', (req, res) => {
+    Remision.find()
+    .exec()
+    .then(x => res.status(200).send(x))
+    .catch(error => res.status(500).send(error))   
 
-     const response = docs.map(doc => ({         
-        id: doc.id,
-        folio: doc.data().folio,
-        cantidad: doc.data().cantidad,
-        producto: doc.data().producto,
-        total: doc.data().total,
-        tipo: doc.data().tipo,
-        empaque: doc.data().empaque,
-        descuento: doc.data().descuento
-     }))
-
-     return res.status(200).json(response)
-   } catch (error) {
-       return res.status(500).send(error)
-   }
 })
 
 router.post('/api/remisiones', async (req, res) => {
-  try {
-   await db.collection('SMREMISIONES').doc('/'+req.body.id +'/')
-   .create({
-        folio: req.body.folio,
-        cantidad: req.body.cantidad,
-        producto: req.body.producto,
-        total: req.body.total,       
-        tipo:req.body.tipo,
-        empaque:req.body.empaque,
-        descuento:req.body.descuento
-   })   
-
-   return res.status(204).json()       
-  } catch (error) {
-      console.log(error)
-      return res.status(500).send(error)
-      
-  }
+    await Remision.insertMany(req.body)    
+    res.json({'message':'Saved successful', "data":req.body})  
 })
 
-router.delete('/api/remisiones/:remision_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMREMISIONES').doc(req.params.remision_id)
-       await doc.delete()
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
+router.delete('/api/remisiones/:id',async (req, res) => {
+    let { id } = req.params;
+    try{        
+        await Remision.deleteOne({_id: id});        
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error existente al borrar: ": id})
    }
+
+   return res.status(200).json()
 })
 
 router.delete('/api/remisiones/',async (req, res) => {
-    try {
-        const query = db.collection('SMREMISIONES')  
-        const querySnapshot = await query.get() 
-
-        let batch = db.batch()
-
-        querySnapshot.docs.forEach((doc) => {
-            batch.delete(doc.ref);
-          })
-
-          batch.commit()
-
-        return res.status(200).json()
+    try{        
+        await Remision.deleteMany();        
     } catch (error) {
-        return res.status(500).send(error)
-    }
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo borrar la coleccion"})
+   }   
+   return res.status(200).json({"message:":"coleccion eliminada"})
  })
 
-router.put('/api/remisiones/:remision_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMREMISIONES').doc(req.params.remision_id)
-       await doc.update({
-        cantidad: req.body.cantidad,
-        producto: req.body.producto,
-        total: req.body.total,       
-        tipo:req.body.tipo,
-        empaque:req.body.empaque,
-        descuento:req.body.descuento        
-       })
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
-   }
+router.put('/api/remisiones/:id',async (req, res) => {
+    let {id} = req.params
+
+    try{        
+        await Remision.update({_id: id}, req.body);
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo actualizar","data: ": id})
+   }   
+    
+    return res.status(200).json({"message:":"actualizacion correcta"})
 })
 
 module.exports = router

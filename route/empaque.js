@@ -1,106 +1,66 @@
 const {Router} = require('express')
-const admin = require('firebase-admin')
+const Empaque = require('../models/Empaque')
 
 const router = Router()
 
-const db = admin.firestore()
-
 
 //obtener un dato
-router.get('/api/empaque/:empaque_id', async (req, res) => {
-    try {
-        const doc = db.collection("SMEMPAQUE").doc(req.params.empaque_id) //product_id es variable
-        const response =  await doc.get()         
-        const product = response.data()
-        return res.status(200).json(product)
-    } catch (error) {
-        res.status(500).send(error)
-    }
+router.get('/api/empaque/:id', async (req, res) => {
+    let {id} = req.params
+    Empaque.findById(id)
+    .exec()
+    .then(x => res.status(200).send(x))
+    .catch(error =>  res.status(500).json({'message':'No se encontro nada', "data":id}))         
 })
 
+
 //obtener todos los datos
-router.get('/api/empaque', async (req, res) => {
-    try {        
-     const query = db.collection('SMEMPAQUE')  
-     const querySnapshot = await query.get()      
-     const docs = querySnapshot.docs      
+router.get('/api/empaque', (req, res) => {
+    Empaque.find()
+    .exec()
+    .then(x => res.status(200).send(x))
+    .catch(error => res.status(500).send(error))   
 
-     const response = docs.map(doc => ({         
-        id: doc.id,
-        empaque: doc.data().empaque,
-        precio: doc.data().precio,
-        piezas: doc.data().piezas,
-        barras: doc.data().barras,
-        clave: doc.data().clave
-     }))
-
-     return res.status(200).json(response)
-   } catch (error) {
-       return res.status(500).send(error)
-   }
 })
 
 router.post('/api/empaque', async (req, res) => {
-  try {
-   await db.collection('SMEMPAQUE').doc('/'+req.body.ID +'/')
-   .create({
-        empaque: req.body.EMPAQUE,
-        precio: req.body.PRECIO,
-        piezas: req.body.PIEZAS,
-        barras: req.body.BARRAS,       
-        clave:req.body.CLAVE
-   })   
-
-   return res.status(204).json()       
-  } catch (error) {
-      console.log(error)
-      return res.status(500).send(error)
-      
-  }
+    await Empaque.insertMany(req.body)    
+    res.json({'message':'Saved successful', "data":req.body})  
 })
 
-router.delete('/api/empaque/:empaque_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMEMPAQUE').doc(req.params.empaque_id)
-       await doc.delete()
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
+router.delete('/api/empaque/:id',async (req, res) => {
+    let { id } = req.params;
+    try{        
+        await Empaque.deleteOne({_id: id});        
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error existente al borrar: ": id})
    }
+
+   return res.status(200).json()
 })
 
 router.delete('/api/empaque/',async (req, res) => {
-    try {
-        const query = db.collection('SMEMPAQUE')  
-        const querySnapshot = await query.get() 
-
-        let batch = db.batch()
-
-        querySnapshot.docs.forEach((doc) => {
-            batch.delete(doc.ref);
-          })
-
-          batch.commit()
-
-        return res.status(200).json()
+    try{        
+        await Empaque.deleteMany();        
     } catch (error) {
-        return res.status(500).send(error)
-    }
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo borrar la coleccion"})
+   }   
+   return res.status(200).json({"message:":"coleccion eliminada"})
  })
 
-router.put('/api/empaque/:empaque_id',async (req, res) => {
-   try {
-       const doc = db.collection('SMEMPAQUE').doc(req.params.empaque_id)
-       await doc.update({
-        empaque: req.body.empaque,
-        precio: req.body.precio,
-        piezas: req.body.piezas,
-        barras: req.body.barras
-       })
-       return res.status(200).json()
-   } catch (error) {
-       return res.status(500).send(error)
-   }
+router.put('/api/empaque/:id',async (req, res) => {
+    let {id} = req.params
+
+    try{        
+        await Empaque.update({_id: id}, req.body);
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({"error: ": "no se pudo actualizar","data: ": id})
+   }   
+    
+    return res.status(200).json({"message:":"actualizacion correcta"})
 })
 
 module.exports = router

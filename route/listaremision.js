@@ -25,8 +25,13 @@ router.get('/api/listaremision', (req, res) => {
 router.post('/api/listaremision',  async (req, res) => {   
    //const newLista = new Listaremision(req.body);
     //await newLista.save();
-    await Listaremision.insertMany(req.body)    
-    res.json({'message':'Saved successful', "data":req.body})  
+    try{
+        await Listaremision.insertMany(req.body)            
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+    
+    res.status(204).json({'message':'Saved successful', "data":req.body})  
 })
 
 router.delete('/api/listaremision/:id',async (req, res) => {

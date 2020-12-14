@@ -23,8 +23,13 @@ router.get('/api/remisiones', (req, res) => {
 })
 
 router.post('/api/remisiones', async (req, res) => {
-    await Remision.insertMany(req.body)    
-    res.json({'message':'Saved successful', "data":req.body})  
+    try{
+        await Remision.insertMany(req.body)            
+    } catch (error) {
+        return res.status(500).send(error)
+    }    
+    res.status(204).json({'message':'Saved successful', "data":req.body}) 
+      
 })
 
 router.delete('/api/remisiones/:id',async (req, res) => {

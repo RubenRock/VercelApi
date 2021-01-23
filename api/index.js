@@ -21,6 +21,7 @@ app.use(require('../route/listaremision'))
 app.use(require('../route/listasimilar'))
 app.use(require('../route/similares'))
 app.use(require('../route/miarroba'))
+app.use(require('../route/fecha'))
 
 app.get('*',async (req, res) => { 
     res.status(200).json('hola mundo')

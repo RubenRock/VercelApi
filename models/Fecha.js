@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const TablaFecha =  Schema({
     fecha: String,
+    fecha_anterior: String,
 },{
     versionKey: false,
 }

@@ -1,13 +1,13 @@
 const {Router} = require('express')
-const Similares = require('../models/Similares')
-
+const Fecha = require('../../models/Papeleria/Fecha')
 
 const router = Router()
 
+
 //obtener un dato
-router.get('/api/similares/:id', async (req, res) => {
+router.get('/api/papel_fecha/:id', async (req, res) => {
     let {id} = req.params
-    Similares.findById(id)
+    Fecha.findById(id)
     .exec()
     .then(x => res.status(200).send(x))
     .catch(error =>  res.status(500).json({'message':'No se encontro nada', "data":id}))         
@@ -15,23 +15,23 @@ router.get('/api/similares/:id', async (req, res) => {
 
 
 //obtener todos los datos
-router.get('/api/similares', (req, res) => {
-    Similares.find()
+router.get('/api/papel_fecha', (req, res) => {
+    Fecha.find()
     .exec()
     .then(x => res.status(200).send(x))
     .catch(error => res.status(500).send(error))   
 
 })
 
-router.post('/api/similares', async (req, res) => {
-    await Similares.insertMany(req.body)    
+router.post('/api/papel_fecha', async (req, res) => {
+    await Fecha.insertMany(req.body)    
     res.json({'message':'Saved successful', "data":req.body})  
 })
 
-router.delete('/api/similares/:id',async (req, res) => {
+router.delete('/api/papel_fecha/:id',async (req, res) => {
     let { id } = req.params;
     try{        
-        await Similares.deleteOne({_id: id});        
+        await Fecha.deleteOne({_id: id});        
     } catch (error) {
         console.log(error)
        return res.status(500).json({"error existente al borrar: ": id})
@@ -40,9 +40,9 @@ router.delete('/api/similares/:id',async (req, res) => {
    return res.status(200).json()
 })
 
-router.delete('/api/similares/',async (req, res) => {
+router.delete('/api/papel_fecha/',async (req, res) => {
     try{        
-        await Similares.deleteMany();        
+        await Fecha.deleteMany();        
     } catch (error) {
         console.log(error)
        return res.status(500).json({"error: ": "no se pudo borrar la coleccion"})
@@ -50,11 +50,11 @@ router.delete('/api/similares/',async (req, res) => {
    return res.status(200).json({"message:":"coleccion eliminada"})
  })
 
-router.put('/api/similares/:id',async (req, res) => {
+router.put('/api/papel_fecha/:id',async (req, res) => {
     let {id} = req.params
 
     try{        
-        await Similares.update({_id: id}, req.body);
+        await Fecha.update({_id: id}, req.body);
     } catch (error) {
         console.log(error)
        return res.status(500).json({"error: ": "no se pudo actualizar","data: ": id})

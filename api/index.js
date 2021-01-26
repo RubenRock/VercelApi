@@ -1,5 +1,4 @@
 import {coneccion} from '../lib/database'
-const mongoose = require('mongoose');
 const express = require('express')
 const app = express()
 const bodyparse = require('body-parser')
@@ -14,14 +13,24 @@ app.get('/api/hello',(req, res) => {
     res.status(200).json('hola desde hello')
 }) 
 
-app.use(require('../route/inventario'))
-app.use(require('../route/empaque'))
-app.use(require('../route/remisiones'))
-app.use(require('../route/listaremision'))
-app.use(require('../route/listasimilar'))
-app.use(require('../route/similares'))
-app.use(require('../route/miarroba'))
-app.use(require('../route/fecha'))
+// San Martin
+app.use(require('../route/SanMartin/inventario'))
+app.use(require('../route/SanMartin/empaque'))
+app.use(require('../route/SanMartin/remisiones'))
+app.use(require('../route/SanMartin/listaremision'))
+app.use(require('../route/SanMartin/listasimilar'))
+app.use(require('../route/SanMartin/similares'))
+app.use(require('../route/SanMartin/miarroba'))
+app.use(require('../route/SanMartin/fecha'))
+
+/* // Papeleria
+app.use(require('../route/Papeleria/inventario'))
+app.use(require('../route/Papeleria/empaque'))
+app.use(require('../route/Papeleria/remisiones'))
+app.use(require('../route/Papeleria/listaremision'))
+app.use(require('../route/Papeleria/listasimilar'))
+app.use(require('../route/Papeleria/similares'))
+app.use(require('../route/Papeleria/fecha')) */
 
 app.get('*',async (req, res) => { 
     res.status(200).json('hola mundo')

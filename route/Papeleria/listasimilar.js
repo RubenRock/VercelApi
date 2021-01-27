@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const ListaSimilar = require('../../models/Papeleria/Listasimilar')
+const ListaSimilar = require('../../models/papeleria/Listasimilar')
 
 
 const router = Router()

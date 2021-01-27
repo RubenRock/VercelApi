@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const Empaque = require('../../models/Papeleria/Empaque')
+const Empaque = require('../../models/papeleria/Empaque')
 
 const router = Router()
 

@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const Inventario = require('../../models/Papeleria/Inventario')
+const Inventario = require('../../models/papeleria/Inventario')
 
 const router = Router()
 

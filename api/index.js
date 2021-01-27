@@ -21,16 +21,16 @@ app.use(require('../route/SanMartin/listaremision'))
 app.use(require('../route/SanMartin/listasimilar'))
 app.use(require('../route/SanMartin/similares'))
 app.use(require('../route/SanMartin/miarroba'))
-app.use(require('../route/SanMartin/fecha'))
+app.use(require('../route/SanMartin/fecha')) 
 
-/* // Papeleria
+ // Papeleria
 app.use(require('../route/Papeleria/inventario'))
 app.use(require('../route/Papeleria/empaque'))
 app.use(require('../route/Papeleria/remisiones'))
 app.use(require('../route/Papeleria/listaremision'))
 app.use(require('../route/Papeleria/listasimilar'))
 app.use(require('../route/Papeleria/similares'))
-app.use(require('../route/Papeleria/fecha')) */
+app.use(require('../route/Papeleria/fecha'))
 
 app.get('*',async (req, res) => { 
     res.status(200).json('hola mundo')

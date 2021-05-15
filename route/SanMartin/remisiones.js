@@ -15,6 +15,7 @@ router.get('/api/remisiones/:id', (req, res) => {
 
 //obtener todos los datos
 router.get('/api/remisiones', (req, res) => {
+    
     Remision.find()
     .exec()
     .then(x => res.status(200).send(x))
@@ -56,6 +57,7 @@ router.delete('/api/remisiones/',async (req, res) => {
 
 router.put('/api/remisiones/:id',async (req, res) => {
     let {id} = req.params
+    
 
     try{        
         await Remision.update({_id: id}, req.body);

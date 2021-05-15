@@ -9,6 +9,8 @@ const TablaRemisiones = new Schema({
     tipo:String,
     empaque:String,
     descuento:String, 
+    clave: String,
+    clave_empaque: String,
 },{
     versionKey: false,
 }

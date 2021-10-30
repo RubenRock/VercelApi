@@ -8,6 +8,7 @@ const TablaInventario =  Schema({
     usuario: String,
     fecha: String,
     ieps: String,
+    facturable: String
 },{
     versionKey: false,
 }

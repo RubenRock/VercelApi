@@ -23,6 +23,7 @@ app.use(require('../route/SanMartin/similares'))
 app.use(require('../route/SanMartin/miarroba'))
 app.use(require('../route/SanMartin/fecha')) 
 app.use(require('../route/SanMartin/clientes')) 
+app.use(require('../route/SanMartin/abonos')) 
 
  // Papeleria
 app.use(require('../route/Papeleria/inventario'))

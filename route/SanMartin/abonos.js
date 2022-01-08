@@ -1,36 +1,36 @@
 const {Router} = require('express')
-const Clientes = require('../../models/SanMartin/Clientes')
+const Modelo = require('../../models/SanMartin/Abonos')
 
 const router = Router()
 
 //obtener un dato
-router.get('/api/clientes/:id', async (req, res) => {
-    let {id} = req.params
-    Clientes.findOne({'nombre':id})
+router.get('/api/abonos/:id', async (req, res) => {
+    let {id} = req.params    
+    Modelo.find({'folio':id})
     .exec()
     .then(x => res.status(200).send(x))
-    .catch(error =>  res.status(500).json({'message':'No se encontro nada', "data":id}))         
+    .catch(error =>  res.status(500).json({'mensaje':`No se encontro nada para el folio: ${id}`}))         
 })
 
 
 //obtener todos los datos
-router.get('/api/clientes', (req, res) => {    
-    Clientes.find()
+router.get('/api/abonos', (req, res) => {    
+    Modelo.find()
     .exec()
     .then(x => res.status(200).send(x))
     .catch(error => res.status(500).send(error))   
 
 })
 
-router.post('/api/clientes', async (req, res) => {
-    await Clientes.insertMany(req.body)    
+router.post('/api/abonos', async (req, res) => {
+    await Modelo.insertMany(req.body)    
     res.json({'message':'Saved successful', "data":req.body})  
 })
 
-router.delete('/api/clientes/:id',async (req, res) => {
+router.delete('/api/abonos/:id',async (req, res) => {
     let { id } = req.params;
     try{        
-        await Clientes.deleteOne({_id: id});        
+        await Modelo.deleteOne({_id: id});        
     } catch (error) {
         console.log(error)
        return res.status(500).json({"error existente al borrar: ": id})
@@ -39,9 +39,9 @@ router.delete('/api/clientes/:id',async (req, res) => {
    return res.status(200).json()
 })
 
-router.delete('/api/clientes/',async (req, res) => {
+router.delete('/api/abonos/',async (req, res) => {
     try{        
-        await Clientes.deleteMany();        
+        await Modelo.deleteMany();        
     } catch (error) {
         console.log(error)
        return res.status(500).json({"error: ": "no se pudo borrar la coleccion"})
@@ -49,11 +49,11 @@ router.delete('/api/clientes/',async (req, res) => {
    return res.status(200).json({"message:":"coleccion eliminada"})
  })
 
-router.put('/api/clientes/:id',async (req, res) => {
+router.put('/api/abonos/:id',async (req, res) => {
     let {id} = req.params
 
     try{        
-        await Clientes.update({_id: id}, req.body);
+        await Modelo.update({_id: id}, req.body);
     } catch (error) {
         console.log(error)
        return res.status(500).json({"error: ": "no se pudo actualizar","data: ": id})

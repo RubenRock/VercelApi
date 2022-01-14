@@ -36,7 +36,11 @@ app.use(require('../route/Papeleria/fecha'))
 
 app.get('*',async (req, res) => { 
     res.status(200).json('hola mundo')
+<<<<<<< HEAD
 })   
+=======
+}) 
+>>>>>>> ab9300565ac38f7b9f620900387d2216a70d948a
 
 
 

@@ -1,0 +1,12 @@
+{    
+    "env": {
+        "MONGODB_URI": "@my-mongodb-uri"
+      },   
+    "routes":[  
+             {
+            "src":"/(.*)",
+            "dest": "/api/index.js"
+        }
+    ]
+}
+

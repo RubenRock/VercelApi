@@ -16,3 +16,10 @@ agregar a vercel.json
 // "env": {
     "MONGODB_URI": "@my-mongodb-uri"
   }
+
+
+//ver ramas remotas que tengo conectadas
+  git remote -v
+
+// forzar el push a github
+  git push -f origin2 master
